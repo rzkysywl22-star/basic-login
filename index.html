@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Masuk — Aplikasi</title>
+    <style>
+        :root{
+            --bg:#f3f4f6;
+            --card:#ffffff;
+            --accent:#2563eb;
+            --muted:#6b7280;
+            --danger:#dc2626;
+            --radius:12px;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            background:linear-gradient(180deg, #eaf2ff 0%, var(--bg) 100%);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:32px;
+            color:#111827;
+        }
+
+        .card{
+            width:100%;
+            max-width:420px;
+            background:var(--card);
+            border-radius:var(--radius);
+            box-shadow:0 6px 24px rgba(15,23,42,0.08);
+            padding:28px;
+        }
+
+        h1{margin:0 0 6px;font-size:20px}
+        p.lead{margin:0 0 20px;color:var(--muted);font-size:14px}
+
+        form{display:grid;gap:12px}
+        label{font-size:13px;color:#111827;display:block;margin-bottom:6px}
+        .input{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            background:#f8fafc;
+            border:1px solid #e6edf3;
+            padding:10px 12px;
+            border-radius:10px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"]{
+            border:0;
+            outline:0;
+            background:transparent;
+            flex:1;
+            font-size:15px;
+            color:inherit;
+        }
+
+        .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+        .checkbox{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+
+        button.primary{
+            background:var(--accent);
+            color:#fff;
+            border:0;
+            padding:12px;
+            border-radius:10px;
+            font-weight:600;
+            cursor:pointer;
+            font-size:15px;
+        }
+        button.primary:disabled{opacity:0.6;cursor:not-allowed}
+
+        .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+        a.link{color:var(--accent);text-decoration:none;font-size:13px}
+
+        .error{
+            background:#fff5f5;
+            border:1px solid rgba(220,38,38,0.12);
+            color:var(--danger);
+            padding:8px 10px;
+            border-radius:8px;
+            font-size:13px;
+        }
+
+        .helper{font-size:13px;color:var(--muted);text-align:center;margin-top:12px}
+        .toggle-btn{
+            background:transparent;border:0;color:var(--muted);cursor:pointer;font-size:13px;padding:6px;border-radius:8px;
+        }
+
+        @media (max-width:420px){
+            body{padding:16px}
+            .card{padding:18px}
+        }
+    </style>
+</head>
+<body>
+    <main class="card" role="main" aria-labelledby="login-heading">
+        <header>
+            <h1 id="login-heading">Masuk ke Akun Anda</h1>
+            <p class="lead">Masukkan email dan kata sandi untuk melanjutkan.</p>
+        </header>
+
+        <div id="errorBox" class="error" style="display:none" role="alert"></div>
+
+        <form id="loginForm" novalidate>
+            <div>
+                <label for="email">Email</label>
+                <div class="input">
+                    <input id="email" name="email" type="email" placeholder="nama@contoh.com" autocomplete="username" required />
+                </div>
+            </div>
+
+            <div>
+                <label for="password">Kata Sandi</label>
+                <div class="input">
+                    <input id="password" name="password" type="password" placeholder="Masukkan kata sandi" autocomplete="current-password" required minlength="6" />
+                    <button type="button" id="togglePassword" class="toggle-btn" aria-pressed="false" aria-label="Tampilkan kata sandi">Tampilkan</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="checkbox"><input id="remember" name="remember" type="checkbox" /> Ingat saya</label>
+                <a href="#" class="link" onclick="alert('Fitur lupa kata sandi belum diimplementasikan');return false">Lupa kata sandi?</a>
+            </div>
+
+            <div class="actions">
+                <button type="submit" id="submitBtn" class="primary">Masuk</button>
+            </div>
+        </form>
+
+        <p class="helper">Belum punya akun? <a href="#" class="link" onclick="alert('Halaman pendaftaran belum diimplementasikan');return false">Daftar</a></p>
+    </main>
+
+    <script>
+        // Simple client-side validation and interactivity
+        (function(){
+            const form = document.getElementById('loginForm');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const errorBox = document.getElementById('errorBox');
+            const submitBtn = document.getElementById('submitBtn');
+            const toggle = document.getElementById('togglePassword');
+
+            toggle.addEventListener('click', () => {
+                const showing = password.type === 'text';
+                password.type = showing ? 'password' : 'text';
+                toggle.textContent = showing ? 'Tampilkan' : 'Sembunyikan';
+                toggle.setAttribute('aria-pressed', String(!showing));
+            });
+
+            function showError(msg){
+                errorBox.textContent = msg;
+                errorBox.style.display = 'block';
+            }
+            function hideError(){
+                errorBox.style.display = 'none';
+                errorBox.textContent = '';
+            }
+
+            form.addEventListener('submit', function(e){
+                e.preventDefault();
+                hideError();
+
+                // basic validation
+                if(!email.value.trim()){
+                    showError('Email wajib diisi.');
+                    email.focus();
+                    return;
+                }
+                if(!password.value){
+                    showError('Kata sandi wajib diisi.');
+                    password.focus();
+                    return;
+                }
+                if(password.value.length < 6){
+                    showError('Kata sandi harus minimal 6 karakter.');
+                    password.focus();
+                    return;
+                }
+
+                // Simulasi kirim data — ganti dengan fetch() ke server Anda
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Memproses...';
+
+                // fake async login
+                setTimeout(() => {
+                    // contoh validasi dummy
+                    const ok = email.value.toLowerCase() === 'user@contoh.com' && password.value === 'password123';
+                    if(ok){
+                        // berhasil — redirect atau lakukan tindakan lainnya
+                        alert('Login berhasil (simulasi).');
+                        // location.href = '/dashboard';
+                    } else {
+                        showError('Email atau kata sandi salah.');
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Masuk';
+                }, 900);
+            });
+        })();
+    </script>
+</body>
+</html>
